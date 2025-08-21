@@ -1,6 +1,7 @@
 use crate::geometry::ray::Ray;
 use crate::geometry::vector::Vector;
 use crate::geometry::sphere::Sphere;
+use crate::geometry::material::SurfaceType;
 use crate::config::*;
 
 pub fn pixel_color(x: u32, y: u32) -> Vector {
@@ -46,23 +47,29 @@ pub fn raytrace(ray: &Ray, bounces: u8) -> Vector {
     let distance = d.unwrap();
     let object = obj.unwrap();
 
-    let emitted = object.color * object.intensity;
+    let emitted = object.material.color * object.material.intensity;
 
     if bounces == 0 { return emitted };
 
     let intersection = ray.origin + distance * ray.direction;
     let normal = object.normal(&intersection);
 
-    // Calculate the direction of the reflection. Must be in the half-space
-    // defined by the intersection normal
-    let random = Vector::random();
-    let random_dot = normal.dot(&random);
-    let new_direction = if random_dot >= 0. { random } else { -random };
-    let new_ray = Ray::new(intersection, new_direction);
-    let bounce_strength = random_dot.abs();
+    let reflected = if object.material.surface_type == SurfaceType::Diffuse {
+        // Calculate the direction of the reflection. Must be in the half-space
+        // defined by the intersection normal
+        let random = Vector::random();
+        let random_dot = normal.dot(&random);
+        let new_direction = if random_dot >= 0. { random } else { -random };
+        let new_ray = Ray::new(intersection, new_direction);
+        let bounce_strength = random_dot.abs();
+        
+        raytrace(&new_ray, bounces - 1).hadamard(&object.material.color) * bounce_strength
+    } else {
+        let new_direction = ray.direction - 2. * ray.direction.dot(&normal) * normal;
+        let new_ray = Ray::new(intersection, new_direction);
 
-    
-    let reflected = raytrace(&new_ray, bounces - 1).hadamard(&object.color) * bounce_strength;
+        raytrace(&new_ray, bounces - 1).hadamard(&object.material.color)
+    };
 
     emitted + reflected
 }
