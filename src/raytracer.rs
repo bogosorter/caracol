@@ -12,7 +12,7 @@ pub fn pixel_color(x: u32, y: u32) -> Vector {
 
     // Transform the ray's direction coordinates from camera space to
     // world space
-    let world_direction = (ray_x * RIGHT + ray_y * UP + FORWARD).normalize();
+    let world_direction = ray_x * RIGHT + ray_y * UP + FORWARD;
     let ray = Ray::new(CAMERA_POSITION, world_direction);
 
     let mut result = Vector::ZERO;
