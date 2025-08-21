@@ -1,8 +1,12 @@
-use image::{RgbImage, Rgb};
+use image::{RgbImage};
 mod config;
 use config::*;
 mod geometry;
 use geometry::ray::Ray;
+mod raytracer;
+use raytracer::raytrace;
+mod utils;
+use utils::to_rgb;
 
 fn main() {
     let mut image = RgbImage::new(WIDTH, HEIGHT);
@@ -19,23 +23,8 @@ fn main() {
             let world_direction = (ray_x * RIGHT + ray_y * UP + FORWARD).normalize();
             let ray = Ray::new(CAMERA_POSITION, world_direction);
 
-            let mut distance: Option<f32> = None;
-            let mut color: Option<Rgb<u8>> = None;
-            for object in OBJECTS.iter() {
-                if let Some(d) = ray.shoot(object) {
-                    if distance.is_none() || d < distance.unwrap() {
-                        distance = Some(d);
-                        color = Some(object.color);
-                    }
-                }
-            }
-
-            if distance.is_none() {
-                image.put_pixel(x, y, Rgb([0, 0, 0]));
-            } else {
-                image.put_pixel(x, y, color.unwrap());
-            }
-
+            let pixel_color = raytrace(&ray, BOUNCES);
+            image.put_pixel(x, HEIGHT - y - 1, to_rgb(&pixel_color));
         }
     }
 

@@ -1,5 +1,6 @@
 use std::ops::{Neg, Add, Sub, Mul};
 use std::fmt;
+use rand::random;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Vector {
@@ -33,6 +34,27 @@ impl Vector {
             z: self.x * other.y - self.y * other.x
         }
     }
+
+    pub const fn hadamard(&self, other: &Vector) -> Vector {
+        Vector {
+            x: self.x * other.x,
+            y: self.y * other.y,
+            z: self.z * other.z
+        }
+    }
+
+    // Returns a random unit vector
+    // https://math.stackexchange.com/questions/44689/how-to-find-a-random-axis-or-unit-vector-in-3d
+    pub fn random() -> Vector {
+        let theta = random::<f32>() * std::f32::consts::PI * 2.;
+        let z = random::<f32>() * 2. - 1.;
+        let x = (1. - z * z).sqrt() * theta.cos();
+        let y = (1. - z * z).sqrt() * theta.sin();
+        
+        Vector {x, y, z}
+    }
+
+    pub const ZERO: Vector = Vector { x: 0., y: 0., z: 0. };
 }
 
 impl Neg for Vector {
@@ -47,7 +69,7 @@ impl Neg for Vector {
     }
 }
 
-impl Add for Vector {
+impl Add<Vector> for Vector {
     type Output = Vector;
 
     fn add(self, other: Vector) -> Vector {
@@ -59,11 +81,80 @@ impl Add for Vector {
     }
 }
 
-impl Sub for Vector {
+impl Add<Vector> for &Vector {
+    type Output = Vector;
+    fn add(self, other: Vector) -> Vector {
+        Vector {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        }
+    }
+}
+
+// Vector + &Vector
+impl Add<&Vector> for Vector {
+    type Output = Vector;
+    fn add(self, other: &Vector) -> Vector {
+        Vector {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        }
+    }
+}
+
+impl Add<&Vector> for &Vector {
+    type Output = Vector;
+    fn add(self, other: &Vector) -> Vector {
+        Vector {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        }
+    }
+}
+
+impl Sub<Vector> for Vector {
     type Output = Vector;
 
     fn sub(self, other: Vector) -> Vector {
         self + (-other)
+    }
+}
+
+impl Sub<Vector> for &Vector {
+    type Output = Vector;
+    fn sub(self, other: Vector) -> Vector {
+        Vector {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+        }
+    }
+}
+
+// Vector - &Vector  
+impl Sub<&Vector> for Vector {
+    type Output = Vector;
+    fn sub(self, other: &Vector) -> Vector {
+        Vector {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+        }
+    }
+}
+
+// &Vector - &Vector
+impl Sub<&Vector> for &Vector {
+    type Output = Vector;
+    fn sub(self, other: &Vector) -> Vector {
+        Vector {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+        }
     }
 }
 
@@ -87,6 +178,28 @@ impl Mul<Vector> for f32 {
             x: vector.x * self,
             y: vector.y * self,
             z: vector.z * self
+        }
+    }
+}
+
+impl Mul<f32> for &Vector {
+    type Output = Vector;
+    fn mul(self, scalar: f32) -> Vector {
+        Vector {
+            x: self.x * scalar,
+            y: self.y * scalar,
+            z: self.z * scalar,
+        }
+    }
+}
+ 
+impl Mul<&Vector> for f32 {
+    type Output = Vector;
+    fn mul(self, vector: &Vector) -> Vector {
+        Vector {
+            x: vector.x * self,
+            y: vector.y * self,
+            z: vector.z * self,
         }
     }
 }
