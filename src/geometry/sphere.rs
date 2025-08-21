@@ -14,6 +14,9 @@ impl Sphere {
     }
 
     pub fn normal(self, point: &Vector) -> Vector {
-        (point - self.center).normalize()
+        // Normalizing a vector is expensive, since it requires calculating a
+        // square root. For a sphere, it is possible to just divide by its
+        // radius
+        (point - self.center) / self.radius
     }
 }
