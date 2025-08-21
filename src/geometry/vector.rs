@@ -1,4 +1,4 @@
-use std::ops::{Neg, Add, Sub, Mul};
+use std::ops::{Neg, Add, Sub, Mul, Div, AddAssign};
 use std::fmt;
 use rand::random;
 
@@ -92,7 +92,6 @@ impl Add<Vector> for &Vector {
     }
 }
 
-// Vector + &Vector
 impl Add<&Vector> for Vector {
     type Output = Vector;
     fn add(self, other: &Vector) -> Vector {
@@ -112,6 +111,18 @@ impl Add<&Vector> for &Vector {
             y: self.y + other.y,
             z: self.z + other.z,
         }
+    }
+}
+
+impl AddAssign<Vector> for Vector {
+    fn add_assign(&mut self, other: Vector) {
+        *self = *self + other;
+    }
+}
+
+impl AddAssign<&Vector> for Vector {
+    fn add_assign(&mut self, other: &Vector) {
+        *self = *self + other;
     }
 }
 
@@ -200,6 +211,52 @@ impl Mul<&Vector> for f32 {
             x: vector.x * self,
             y: vector.y * self,
             z: vector.z * self,
+        }
+    }
+}
+
+impl Div<f32> for Vector {
+    type Output = Vector;
+
+    fn div(self, scalar: f32) -> Vector {
+        Vector {
+            x: self.x / scalar,
+            y: self.y / scalar,
+            z: self.z / scalar
+        }
+    }
+}
+
+impl Div<Vector> for f32 {
+    type Output = Vector;
+
+    fn div(self, vector: Vector) -> Vector {
+        Vector {
+            x: vector.x / self,
+            y: vector.y / self,
+            z: vector.z / self
+        }
+    }
+}
+
+impl Div<f32> for &Vector {
+    type Output = Vector;
+    fn div(self, scalar: f32) -> Vector {
+        Vector {
+            x: self.x / scalar,
+            y: self.y / scalar,
+            z: self.z / scalar,
+        }
+    }
+}
+ 
+impl Div<&Vector> for f32 {
+    type Output = Vector;
+    fn div(self, vector: &Vector) -> Vector {
+        Vector {
+            x: vector.x / self,
+            y: vector.y / self,
+            z: vector.z / self,
         }
     }
 }

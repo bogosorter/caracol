@@ -14,7 +14,12 @@ pub fn pixel_color(x: u32, y: u32) -> Vector {
     let world_direction = (ray_x * RIGHT + ray_y * UP + FORWARD).normalize();
     let ray = Ray::new(CAMERA_POSITION, world_direction);
 
-    raytrace(&ray, BOUNCES)
+    let mut result = Vector::ZERO;
+    for _ in 0..ITERATIONS {
+        result += raytrace(&ray, BOUNCES);
+    }
+
+    result / ITERATIONS as f32
 }
 
 // Returns the color of the ray, using diffuse reflection
