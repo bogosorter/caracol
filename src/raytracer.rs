@@ -3,6 +3,20 @@ use crate::geometry::vector::Vector;
 use crate::geometry::sphere::Sphere;
 use crate::config::*;
 
+pub fn pixel_color(x: u32, y: u32) -> Vector {
+    // Calculate ray direction relative to camera. Top left corner is
+    // given by (-tan(FOV_ANGLE / 2), tan(FOV_ANGLE / 2) * HEIGHT / WIDTH)
+    let ray_x = (FOV_ANGLE / 2.).tan() * (-1. + (x as f32 + 0.5) * 2. / WIDTH as f32);
+    let ray_y = (FOV_ANGLE / 2.).tan() * HEIGHT as f32 / WIDTH as f32 * (1. - (y as f32 + 0.5) * 2. / HEIGHT as f32);
+
+    // Transform the ray's direction coordinates from camera space to
+    // world space
+    let world_direction = (ray_x * RIGHT + ray_y * UP + FORWARD).normalize();
+    let ray = Ray::new(CAMERA_POSITION, world_direction);
+
+    raytrace(&ray, BOUNCES)
+}
+
 // Returns the color of the ray, using diffuse reflection
 pub fn raytrace(ray: &Ray, bounces: u8) -> Vector {
 
