@@ -51,8 +51,9 @@ pub fn raytrace(ray: &Ray, bounces: u8) -> Vector {
 
     if bounces == 0 { return emitted };
 
-    let intersection = ray.origin + distance * ray.direction;
+    let mut intersection = ray.origin + distance * ray.direction;
     let normal = object.normal(&intersection);
+    intersection += normal * EPSILON;
 
     let reflected = if object.material.surface_type == SurfaceType::Diffuse {
         // Calculate the direction of the reflection. Must be in the half-space
