@@ -45,18 +45,16 @@ fn raytrace(ray: &Ray, bounces: u8) -> Vector {
 
     let mut intersection = ray.origin + distance * ray.direction;
     let normal = object.normal(&intersection);
+
+    // Ading normal * EPSILON helps to prevent shadown acne
     intersection += normal * EPSILON;
 
     let reflected = if object.material.surface_type == SurfaceType::Diffuse {
-        // Calculate the direction of the reflection. Must be in the half-space
-        // defined by the intersection normal
-        let random = Vector::random();
-        let random_dot = normal.dot(&random);
-        let new_direction = if random_dot >= 0. { random } else { -random };
+        // Calculate the direction of the reflection using lambertian distribution
+        let new_direction = normal + Vector::random();
         let new_ray = Ray::new(intersection, new_direction);
-        let bounce_strength = random_dot.abs();
         
-        raytrace(&new_ray, bounces - 1).hadamard(&object.material.color) * bounce_strength
+        raytrace(&new_ray, bounces - 1).hadamard(&object.material.color)
     } else {
         let new_direction = ray.direction - 2. * ray.direction.dot(&normal) * normal;
         let new_ray = Ray::new(intersection, new_direction);

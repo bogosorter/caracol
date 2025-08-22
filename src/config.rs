@@ -26,5 +26,5 @@ pub const OBJECTS: [Sphere; 5] = [
     Sphere::new(Vector::new(3., 0.5, -5.), 0.5, Material::new(Vector::new(0., 1., 0.), 0., SurfaceType::Diffuse)),
     Sphere::new(Vector::new(-3., 1.8, -6.), 2., Material::new(Vector::new(0.9, 0.9, 0.9), 0., SurfaceType::Reflective)),
     Sphere::new(Vector::new(0., -100., 0.), 100., Material::new(Vector::new(0.5, 0.35, 0.03), 0., SurfaceType::Diffuse)),
-    Sphere::new(Vector::new(60., 120., -40.), 80., Material::new(Vector::new(1., 1., 1.), 6., SurfaceType::Diffuse))
+    Sphere::new(Vector::new(60., 120., -40.), 80., Material::new(Vector::new(1., 1., 1.), 3., SurfaceType::Diffuse))
 ];
