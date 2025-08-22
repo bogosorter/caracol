@@ -16,7 +16,7 @@ pub const UP: Vector = RIGHT.cross(&FORWARD);
 pub const VOID: Vector = Vector::new(0.3, 0.3, 0.3);
 
 // Raytracing settings
-pub const ITERATIONS: u32 = 20;
+pub const ITERATIONS: u32 = 40;
 pub const BOUNCES: u8 = 5;
 pub const EPSILON: f64 = 1e-6;
 
