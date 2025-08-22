@@ -12,7 +12,8 @@ pub fn pixel_color(x: u32, y: u32) -> Vector {
         result += raytrace(&ray, BOUNCES);
     }
 
-    result / ITERATIONS as f64
+    result /= ITERATIONS as f64;
+    result.clamp(0., 1.)
 }
 
 // Returns the color of the ray, using diffuse reflection

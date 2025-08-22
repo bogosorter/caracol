@@ -1,4 +1,4 @@
-use std::ops::{Neg, Add, Sub, Mul, Div, AddAssign};
+use std::ops::{Neg, Add, Sub, Mul, Div, AddAssign, SubAssign, MulAssign, DivAssign};
 use std::fmt;
 use rand::random;
 
@@ -40,6 +40,14 @@ impl Vector {
             x: self.x * other.x,
             y: self.y * other.y,
             z: self.z * other.z
+        }
+    }
+
+    pub const fn clamp(&self, min: f64, max: f64) -> Vector {
+        Vector {
+            x: self.x.clamp(min, max),
+            y: self.y.clamp(min, max),
+            z: self.z.clamp(min, max)
         }
     }
 
@@ -145,7 +153,6 @@ impl Sub<Vector> for &Vector {
     }
 }
 
-// Vector - &Vector  
 impl Sub<&Vector> for Vector {
     type Output = Vector;
     fn sub(self, other: &Vector) -> Vector {
@@ -157,7 +164,6 @@ impl Sub<&Vector> for Vector {
     }
 }
 
-// &Vector - &Vector
 impl Sub<&Vector> for &Vector {
     type Output = Vector;
     fn sub(self, other: &Vector) -> Vector {
@@ -166,6 +172,18 @@ impl Sub<&Vector> for &Vector {
             y: self.y - other.y,
             z: self.z - other.z,
         }
+    }
+}
+
+impl SubAssign<Vector> for Vector {
+    fn sub_assign(&mut self, other: Vector) {
+        *self = *self - other;
+    }
+}
+
+impl SubAssign<&Vector> for Vector {
+    fn sub_assign(&mut self, other: &Vector) {
+        *self = *self - other;
     }
 }
 
@@ -215,6 +233,12 @@ impl Mul<&Vector> for f64 {
     }
 }
 
+impl MulAssign<f64> for Vector {
+    fn mul_assign(&mut self, rhs: f64) {
+        *self = *self * rhs;
+    }
+}
+
 impl Div<f64> for Vector {
     type Output = Vector;
 
@@ -261,8 +285,15 @@ impl Div<&Vector> for f64 {
     }
 }
 
+impl DivAssign<f64> for Vector {
+    fn div_assign(&mut self, rhs: f64) {
+        *self = *self / rhs;
+    }
+}
+
 impl fmt::Display for Vector {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "({}, {}, {})", self.x, self.y, self.z)
     }
 }
+
