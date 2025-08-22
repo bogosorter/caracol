@@ -1,6 +1,7 @@
 use std::ops::{Neg, Add, Sub, Mul, Div, AddAssign, SubAssign, MulAssign, DivAssign};
 use std::fmt;
 use rand::random;
+use crate::config::EPSILON;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Vector {
@@ -49,6 +50,11 @@ impl Vector {
             y: self.y.clamp(min, max),
             z: self.z.clamp(min, max)
         }
+    }
+
+    // Returns true if all the components are zero within a given error margin
+    pub const fn is_zero(&self) -> bool {
+        self.x.abs() <= EPSILON && self.y.abs() <= EPSILON && self.z.abs() <= EPSILON
     }
 
     // Returns a random unit vector

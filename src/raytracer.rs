@@ -52,7 +52,8 @@ fn raytrace(ray: &Ray, bounces: u8) -> Vector {
 
     let reflected = if object.material.surface_type == SurfaceType::Diffuse {
         // Calculate the direction of the reflection using lambertian distribution
-        let new_direction = normal + Vector::random();
+        let mut new_direction = normal + Vector::random();
+        if new_direction.is_zero() { new_direction = normal; }
         let new_ray = Ray::new(intersection, new_direction);
         
         raytrace(&new_ray, bounces - 1).hadamard(&object.material.color)
