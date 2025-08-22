@@ -4,13 +4,13 @@ use rand::random;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Vector {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
 }
 
 impl Vector {
-    pub const fn new(x: f32, y: f32, z: f32) -> Vector {
+    pub const fn new(x: f64, y: f64, z: f64) -> Vector {
         Vector { x, y, z }
     }
 
@@ -23,7 +23,7 @@ impl Vector {
         }
     }
 
-    pub const fn dot(&self, other: &Vector) -> f32 {
+    pub const fn dot(&self, other: &Vector) -> f64 {
         self.x * other.x + self.y * other.y + self.z * other.z
     }
 
@@ -46,8 +46,8 @@ impl Vector {
     // Returns a random unit vector
     // https://math.stackexchange.com/questions/44689/how-to-find-a-random-axis-or-unit-vector-in-3d
     pub fn random() -> Vector {
-        let theta = random::<f32>() * std::f32::consts::PI * 2.;
-        let z = random::<f32>() * 2. - 1.;
+        let theta = random::<f64>() * std::f64::consts::PI * 2.;
+        let z = random::<f64>() * 2. - 1.;
         let x = (1. - z * z).sqrt() * theta.cos();
         let y = (1. - z * z).sqrt() * theta.sin();
         
@@ -169,10 +169,10 @@ impl Sub<&Vector> for &Vector {
     }
 }
 
-impl Mul<f32> for Vector {
+impl Mul<f64> for Vector {
     type Output = Vector;
 
-    fn mul(self, scalar: f32) -> Vector {
+    fn mul(self, scalar: f64) -> Vector {
         Vector {
             x: self.x * scalar,
             y: self.y * scalar,
@@ -181,7 +181,7 @@ impl Mul<f32> for Vector {
     }
 }
 
-impl Mul<Vector> for f32 {
+impl Mul<Vector> for f64 {
     type Output = Vector;
 
     fn mul(self, vector: Vector) -> Vector {
@@ -193,9 +193,9 @@ impl Mul<Vector> for f32 {
     }
 }
 
-impl Mul<f32> for &Vector {
+impl Mul<f64> for &Vector {
     type Output = Vector;
-    fn mul(self, scalar: f32) -> Vector {
+    fn mul(self, scalar: f64) -> Vector {
         Vector {
             x: self.x * scalar,
             y: self.y * scalar,
@@ -204,7 +204,7 @@ impl Mul<f32> for &Vector {
     }
 }
  
-impl Mul<&Vector> for f32 {
+impl Mul<&Vector> for f64 {
     type Output = Vector;
     fn mul(self, vector: &Vector) -> Vector {
         Vector {
@@ -215,10 +215,10 @@ impl Mul<&Vector> for f32 {
     }
 }
 
-impl Div<f32> for Vector {
+impl Div<f64> for Vector {
     type Output = Vector;
 
-    fn div(self, scalar: f32) -> Vector {
+    fn div(self, scalar: f64) -> Vector {
         Vector {
             x: self.x / scalar,
             y: self.y / scalar,
@@ -227,7 +227,7 @@ impl Div<f32> for Vector {
     }
 }
 
-impl Div<Vector> for f32 {
+impl Div<Vector> for f64 {
     type Output = Vector;
 
     fn div(self, vector: Vector) -> Vector {
@@ -239,9 +239,9 @@ impl Div<Vector> for f32 {
     }
 }
 
-impl Div<f32> for &Vector {
+impl Div<f64> for &Vector {
     type Output = Vector;
-    fn div(self, scalar: f32) -> Vector {
+    fn div(self, scalar: f64) -> Vector {
         Vector {
             x: self.x / scalar,
             y: self.y / scalar,
@@ -250,7 +250,7 @@ impl Div<f32> for &Vector {
     }
 }
  
-impl Div<&Vector> for f32 {
+impl Div<&Vector> for f64 {
     type Output = Vector;
     fn div(self, vector: &Vector) -> Vector {
         Vector {

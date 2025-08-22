@@ -9,12 +9,12 @@ pub enum SurfaceType {
 #[derive(Debug, Clone, Copy)]
 pub struct Material {
     pub color: Vector,
-    pub intensity: f32,
+    pub intensity: f64,
     pub surface_type: SurfaceType
 }
 
 impl Material {
-    pub const fn new(color: Vector, intensity: f32, surface_type: SurfaceType) -> Material {
+    pub const fn new(color: Vector, intensity: f64, surface_type: SurfaceType) -> Material {
         Material { color, intensity, surface_type }
     }
 }

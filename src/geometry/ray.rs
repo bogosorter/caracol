@@ -13,7 +13,7 @@ impl Ray {
     }
 
     // Returns the intersection point of a ray and a sphere, if any
-    pub fn shoot(&self, sphere: &Sphere) -> Option<f32> {
+    pub fn shoot(&self, sphere: &Sphere) -> Option<f64> {
         let oc = self.origin - sphere.center;
         let a = self.direction.dot(&self.direction);
         let b = 2. * oc.dot(&self.direction);

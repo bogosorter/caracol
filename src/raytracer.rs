@@ -7,8 +7,8 @@ use crate::config::*;
 pub fn pixel_color(x: u32, y: u32) -> Vector {
     // Calculate ray direction relative to camera. Top left corner is
     // given by (-tan(FOV_ANGLE / 2), tan(FOV_ANGLE / 2) * HEIGHT / WIDTH)
-    let ray_x = (FOV_ANGLE / 2.).tan() * (-1. + (x as f32 + 0.5) * 2. / WIDTH as f32);
-    let ray_y = (FOV_ANGLE / 2.).tan() / ASPECT_RATIO * (1. - (y as f32 + 0.5) * 2. / HEIGHT as f32);
+    let ray_x = (FOV_ANGLE / 2.).tan() * (-1. + (x as f64 + 0.5) * 2. / WIDTH as f64);
+    let ray_y = (FOV_ANGLE / 2.).tan() / ASPECT_RATIO * (1. - (y as f64 + 0.5) * 2. / HEIGHT as f64);
 
     // Transform the ray's direction coordinates from camera space to
     // world space
@@ -20,7 +20,7 @@ pub fn pixel_color(x: u32, y: u32) -> Vector {
         result += raytrace(&ray, BOUNCES);
     }
 
-    result / ITERATIONS as f32
+    result / ITERATIONS as f64
 }
 
 // Returns the color of the ray, using diffuse reflection
@@ -28,7 +28,7 @@ pub fn raytrace(ray: &Ray, bounces: u8) -> Vector {
 
     // Find the closest intersection
 
-    let mut d: Option<f32> = None;
+    let mut d: Option<f64> = None;
     let mut obj: Option<&Sphere> = None;
 
     for object in OBJECTS.iter() {
