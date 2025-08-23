@@ -4,16 +4,20 @@ use config::*;
 mod geometry;
 mod raytracer;
 use raytracer::pixel_color;
+mod camera;
+use camera::Camera;
 mod utils;
 
 fn main() {
+    let camera = Camera::new();
     let mut image = RgbImage::new(WIDTH, HEIGHT);
 
     for x in 0..WIDTH {
         utils::print_progress(x as f64 / WIDTH as f64);
 
         for y in 0.. HEIGHT {
-            image.put_pixel(x, HEIGHT - y - 1, utils::to_rgb(&pixel_color(x, y)));
+            let color = pixel_color(&camera, x, y);
+            image.put_pixel(x, HEIGHT - y - 1, utils::to_rgb(&color));
         }
     }
 

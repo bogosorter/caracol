@@ -11,9 +11,8 @@ pub const HEIGHT: u32 = (WIDTH as f64 / ASPECT_RATIO) as u32;
 // Camera settings
 pub const FOV_ANGLE: f64 = std::f64::consts::FRAC_PI_3;
 pub const CAMERA_POSITION: Vector = Vector::new(0., 0., -20.);
-pub const FORWARD: Vector = Vector::new(0., 0., 1.);
-pub const RIGHT: Vector = Vector::new(1., 0., 0.);
-pub const UP: Vector = RIGHT.cross(&FORWARD);
+pub const LOOK_AT: Vector = Vector::new(0., 0.3, -13.);
+pub const VIEW_UP: Vector = Vector::new(0., 1., 0.);
 pub const VOID: Vector = Vector::new(0.3, 0.3, 0.3);
 
 // Raytracing settings
