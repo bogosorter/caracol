@@ -39,12 +39,13 @@ impl Material for DiffuseMaterial {
 
 pub struct ReflectiveMaterial {
     pub albedo: Vector,
+    pub glossiness: f64,
     pub intensity: f64
 }
 
 impl ReflectiveMaterial {
-    pub fn new(albedo: Vector, intensity: f64) -> Self {
-        Self { albedo, intensity }
+    pub fn new(albedo: Vector, intensity: f64, glossiness: f64) -> Self {
+        Self { albedo, intensity, glossiness }
     }
 }
 
@@ -58,7 +59,12 @@ impl Material for ReflectiveMaterial {
     }
 
     fn reflect(&self, ray: &Ray, point: &Vector, normal: &Vector) -> Ray {
-        let direction = ray.direction - 2. * ray.direction.dot(&normal) * normal;
+        let mut direction = ray.direction - 2. * ray.direction.dot(&normal) * normal;
+        direction += (1. - self.glossiness) * Vector::random();
+
+        // Prevent the unlikely event that the result of the above operation is 0
+        if direction.is_zero() { direction = normal.clone(); }
+
         Ray::new(point.clone(), direction)
     }
 }

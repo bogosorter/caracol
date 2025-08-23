@@ -26,7 +26,8 @@ pub static OBJECTS: Lazy<Vec<Sphere>> = Lazy::new( || {
     vec![
         Sphere::new(Vector::new(0., 0.3, -13.), 1., Box::new(DiffuseMaterial::new(Vector::new(1., 0., 1.), 0.))),
         Sphere::new(Vector::new(3., 0.5, -5.), 0.5, Box::new(DiffuseMaterial::new(Vector::new(0., 1., 0.), 0.))),
-        Sphere::new(Vector::new(-3., 1.8, -6.), 2., Box::new(ReflectiveMaterial::new(Vector::new(0.9, 0.9, 0.9), 0.))),
+        Sphere::new(Vector::new(-3., 1.8, -6.), 2., Box::new(ReflectiveMaterial::new(Vector::new(0.9, 0.9, 0.9), 0., 1.))),
+        Sphere::new(Vector::new(-3., 0., -13.), 0.8, Box::new(ReflectiveMaterial::new(Vector::new(0.9, 0.9, 0.9), 0., 0.8))),
         Sphere::new(Vector::new(0., -100., 0.), 100., Box::new(DiffuseMaterial::new(Vector::new(0.5, 0.35, 0.03), 0.))),
         Sphere::new(Vector::new(60., 120., -40.), 80., Box::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 3.)))
     ]
