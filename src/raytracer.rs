@@ -2,7 +2,6 @@ use rand::random;
 use crate::geometry::ray::Ray;
 use crate::geometry::vector::Vector;
 use crate::geometry::sphere::Sphere;
-use crate::geometry::material::SurfaceType;
 use crate::config::*;
 
 pub fn pixel_color(x: u32, y: u32) -> Vector {
@@ -40,33 +39,19 @@ fn raytrace(ray: &Ray, bounces: u8) -> Vector {
     let distance = d.unwrap();
     let object = obj.unwrap();
 
-    let emitted = object.material.color * object.material.intensity;
-
-    if bounces == 0 { return emitted };
+    if bounces == 0 { return object.material.emission() };
 
     let mut intersection = ray.origin + distance * ray.direction;
     let normal = object.normal(&intersection);
-
-    // Ading normal * EPSILON helps to prevent shadown acne
+    // Ading normal * EPSILON helps to prevent shadow acne
     intersection += normal * EPSILON;
 
-    let reflected = if object.material.surface_type == SurfaceType::Diffuse {
-        // Calculate the direction of the reflection using lambertian distribution
-        let mut new_direction = normal + Vector::random();
-        if new_direction.is_zero() { new_direction = normal; }
-        let new_ray = Ray::new(intersection, new_direction);
-        
-        raytrace(&new_ray, bounces - 1).hadamard(&object.material.color)
-    } else {
-        let new_direction = ray.direction - 2. * ray.direction.dot(&normal) * normal;
-        let new_ray = Ray::new(intersection, new_direction);
-
-        raytrace(&new_ray, bounces - 1).hadamard(&object.material.color)
-    };
+    let emitted = object.material.emission();
+    let reflected = raytrace(&object.material.reflect(&ray, &intersection, &normal), bounces - 1).hadamard(&object.material.albedo());
 
     emitted + reflected
 }
-
+ 
 fn ray_for_pixel(x: u32, y: u32) -> Ray {
     // To create an antialising effect, we add a little offset to the starting
     // ray position

@@ -8,8 +8,8 @@ pub struct Ray {
 }
 
 impl Ray {
-    pub fn new(origin: Vector, direction: Vector) -> Ray {
-        Ray { origin, direction }
+    pub fn new(origin: Vector, direction: Vector) -> Self {
+        Self { origin, direction }
     }
 
     // Returns the intersection point of a ray and a sphere, if any

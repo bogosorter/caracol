@@ -1,20 +1,64 @@
 use crate::geometry::vector::Vector;
+use crate::geometry::ray::Ray;
 
-#[derive(PartialEq, Eq, Debug, Clone, Copy)]
-pub enum SurfaceType {
-    Diffuse,
-    Reflective
+pub trait Material: Sync + Send {
+    fn albedo(&self) -> Vector;
+    fn emission(&self) -> Vector;
+    fn reflect(&self, ray: &Ray, point: &Vector, normal: &Vector) -> Ray;
 }
 
-#[derive(Debug, Clone, Copy)]
-pub struct Material {
-    pub color: Vector,
-    pub intensity: f64,
-    pub surface_type: SurfaceType
+pub struct DiffuseMaterial {
+    pub albedo: Vector,
+    pub intensity: f64
 }
 
-impl Material {
-    pub const fn new(color: Vector, intensity: f64, surface_type: SurfaceType) -> Material {
-        Material { color, intensity, surface_type }
+impl DiffuseMaterial {
+    pub fn new(albedo: Vector, intensity: f64) -> Self {
+        Self { albedo, intensity }
+    }
+}
+
+impl Material for DiffuseMaterial {
+    fn albedo(&self) -> Vector {
+        return self.albedo;
+    }
+
+    fn emission(&self) -> Vector {
+        self.albedo * self.intensity
+    }
+
+    fn reflect(&self, _: &Ray, point: &Vector, normal: &Vector) -> Ray {
+        // Diffuse materials use Lambertian distribution
+        let mut direction = normal + Vector::random();
+        // Prevent the unlikely event that the result of the above operation is 0
+        if direction.is_zero() { direction = normal.clone(); }
+
+        Ray::new(point.clone(), direction)
+    }
+}
+
+pub struct ReflectiveMaterial {
+    pub albedo: Vector,
+    pub intensity: f64
+}
+
+impl ReflectiveMaterial {
+    pub fn new(albedo: Vector, intensity: f64) -> Self {
+        Self { albedo, intensity }
+    }
+}
+
+impl Material for ReflectiveMaterial {
+    fn albedo(&self) -> Vector {
+        return self.albedo;
+    }
+    
+    fn emission(&self) -> Vector {
+        self.albedo * self.intensity
+    }
+
+    fn reflect(&self, ray: &Ray, point: &Vector, normal: &Vector) -> Ray {
+        let direction = ray.direction - 2. * ray.direction.dot(&normal) * normal;
+        Ray::new(point.clone(), direction)
     }
 }
