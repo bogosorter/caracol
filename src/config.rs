@@ -13,10 +13,11 @@ pub const FOV_ANGLE: f64 = std::f64::consts::FRAC_PI_3;
 pub const CAMERA_POSITION: Vector = Vector::new(0., 0.3, 20.);
 pub const LOOK_AT: Vector = Vector::new(0., 0.3, 13.);
 pub const VIEW_UP: Vector = Vector::new(0., 1., -0.);
+pub const DEFOCUS_ANGLE: f64 = 0.01;
 pub const VOID: Vector = Vector::new(0.3, 0.3, 0.3);
 
 // Raytracing settings
-pub const ITERATIONS: u32 = 1000;
+pub const ITERATIONS: u32 = 40;
 pub const BOUNCES: u8 = 5;
 pub const EPSILON: f64 = 1e-6;
 
@@ -24,7 +25,7 @@ pub const EPSILON: f64 = 1e-6;
 pub static OBJECTS: Lazy<Vec<Sphere>> = Lazy::new( || {
     vec![
         Sphere::new(Vector::new(0., 0.3, 13.), 1., Box::new(DiffuseMaterial::new(Vector::new(1., 0., 1.), 0.))),
-        Sphere::new(Vector::new(3., 0.5, 5.), 0.5, Box::new(DiffuseMaterial::new(Vector::new(0., 1., 0.), 0.))),
+        Sphere::new(Vector::new(3., 0.5, 2.), 0.5, Box::new(DiffuseMaterial::new(Vector::new(0., 1., 0.), 0.))),
         Sphere::new(Vector::new(-3., 1.8, 6.), 2., Box::new(ReflectiveMaterial::new(Vector::new(0.9, 0.9, 0.9), 0., 1.))),
         Sphere::new(Vector::new(-3., 0., 13.), 0.8, Box::new(ReflectiveMaterial::new(Vector::new(0.9, 0.9, 0.9), 0., 0.8))),
         Sphere::new(Vector::new(0., -100., 0.), 100., Box::new(DiffuseMaterial::new(Vector::new(0.5, 0.35, 0.03), 0.))),

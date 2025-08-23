@@ -15,12 +15,16 @@ impl Vector {
         Self { x, y, z }
     }
 
+    pub fn magnitude(&self) -> f64 {
+        (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
+    }
+
     pub fn normalize(&self) -> Vector {
-        let magnitude = (self.x * self.x + self.y * self.y + self.z * self.z).sqrt();
+        let m = self.magnitude();
         Vector {
-            x: self.x / magnitude,
-            y: self.y / magnitude,
-            z: self.z / magnitude
+            x: self.x / m,
+            y: self.y / m,
+            z: self.z / m
         }
     }
 
