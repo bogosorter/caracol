@@ -17,7 +17,7 @@ fn main() {
 
         for y in 0.. HEIGHT {
             let color = pixel_color(&camera, x, y);
-            image.put_pixel(x, HEIGHT - y - 1, utils::to_rgb(&color));
+            image.put_pixel(x, y, utils::to_rgb(&color));
         }
     }
 
