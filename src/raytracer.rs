@@ -1,6 +1,5 @@
 use crate::geometry::ray::Ray;
 use crate::geometry::vector::Vector;
-use crate::geometry::sphere::Sphere;
 use crate::camera::Camera;
 use crate::config::*;
 
@@ -18,36 +17,25 @@ pub fn pixel_color(camera: &Camera, x: u32, y: u32) -> Vector {
 // Returns the color of the ray, using diffuse reflection
 fn raytrace(ray: &Ray, bounces: u8) -> Vector {
 
-    // Find the closest intersection
+    // Find the closest collision
+    let collision = ELEMENTS
+        .iter()
+        .filter_map(|obj| obj.collide(ray))
+        .min_by(|a, b| a.distance.total_cmp(&b.distance));
 
-    let mut d: Option<f64> = None;
-    let mut obj: Option<&Sphere> = None;
+    if collision.is_none() { return VOID }
+    let info = collision.unwrap();
 
-    for object in OBJECTS.iter() {
-        let Some(distance) = ray.shoot(object) else { continue };
-        if d.is_none() || distance < d.unwrap() {
-            d = Some(distance);
-            obj = Some(object);
-        };
-    }
+    // Compute the pixel's color
 
-    if d.is_none() { return VOID };
+    if bounces == 0 { return info.material.emission() };
 
-    // Compute the pixel's color given the intersected object and the number of
-    // bounces left
+    // Adding normal * EPSILON helps to prevent shadow acne
+    let intersection = ray.at(info.distance) + info.normal * EPSILON;
 
-    let distance = d.unwrap();
-    let object = obj.unwrap();
-
-    if bounces == 0 { return object.material.emission() };
-
-    let mut intersection = ray.origin + distance * ray.direction;
-    let normal = object.normal(&intersection);
-    // Ading normal * EPSILON helps to prevent shadow acne
-    intersection += normal * EPSILON;
-
-    let emitted = object.material.emission();
-    let reflected = raytrace(&object.material.reflect(&ray, &intersection, &normal), bounces - 1).hadamard(&object.material.albedo());
+    let emitted = info.material.emission();
+    let reflected_ray = &info.material.reflect(&ray, &intersection, &info.normal);
+    let reflected = raytrace(reflected_ray, bounces - 1).hadamard(&info.material.albedo());
 
     emitted + reflected
 }
