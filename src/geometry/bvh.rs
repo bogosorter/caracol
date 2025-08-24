@@ -1,15 +1,16 @@
+use std::rc::Rc;
 use crate::geometry::ray::Ray;
 use crate::geometry::hitbox::HitBox;
 use crate::geometry::scene_element::{SceneElement, CollisionInfo};
 
 struct BVHNode {
-    left: Box<dyn SceneElement>,
-    right: Box<dyn SceneElement>,
+    left: Rc<dyn SceneElement>,
+    right: Rc<dyn SceneElement>,
     pub hitbox: HitBox
 }
 
 impl BVHNode {
-    pub fn new(left: Box<dyn SceneElement>, right: Box<dyn SceneElement>) -> Self {
+    pub fn new(left: Rc<dyn SceneElement>, right: Rc<dyn SceneElement>) -> Self {
         let hitbox = left.hitbox() + right.hitbox();
         Self {left, right, hitbox}
     }
@@ -37,13 +38,13 @@ impl SceneElement for BVHNode {
     }
 }
 
-pub fn build_bvh(mut elements: Vec<Box<dyn SceneElement + Send + Sync>>) -> Option<Box<dyn SceneElement + Send + Sync>> {
+pub fn build_bvh(mut elements: Vec<Rc<dyn SceneElement>>) -> Option<Rc<dyn SceneElement>> {
     if elements.len() == 0 { return None }
     if elements.len() == 1 { return Some(elements.remove(0)) }
 
     let mut result = elements.remove(0);
     for element in elements {
-        result = Box::new(BVHNode::new(result, element));
+        result = Rc::new(BVHNode::new(result, element));
     }
 
     Some(result)

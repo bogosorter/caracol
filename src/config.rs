@@ -1,9 +1,4 @@
-use once_cell::sync::Lazy;
-use rand::random;
 use crate::geometry::vector::Vector;
-use crate::geometry::sphere::Sphere;
-use crate::geometry::material::{DiffuseMaterial, ReflectiveMaterial};
-use crate::geometry::scene_element::SceneElement;
 
 // Image settings
 pub const ASPECT_RATIO: f64 = 16./9.;

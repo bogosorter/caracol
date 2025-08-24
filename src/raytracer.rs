@@ -1,14 +1,15 @@
+use std::rc::Rc;
 use crate::geometry::ray::Ray;
 use crate::geometry::scene_element::SceneElement;
 use crate::geometry::vector::Vector;
 use crate::camera::Camera;
 use crate::config::*;
 
-pub fn pixel_color(camera: &Camera, bvh: &Box<dyn SceneElement + Send + Sync>, x: u32, y: u32) -> Vector {
+pub fn pixel_color(camera: &Camera, bvh: Rc<dyn SceneElement>, x: u32, y: u32) -> Vector {
     let mut result = Vector::ZERO;
 
     for _ in 0..ITERATIONS {
-        result += raytrace(&camera.ray(x, y), bvh, BOUNCES);
+        result += raytrace(&camera.ray(x, y), bvh.clone(), BOUNCES);
     }
 
     result /= ITERATIONS as f64;
@@ -16,7 +17,7 @@ pub fn pixel_color(camera: &Camera, bvh: &Box<dyn SceneElement + Send + Sync>, x
 }
 
 // Returns the color of the ray, using diffuse reflection
-fn raytrace(ray: &Ray, bvh: &Box<dyn SceneElement + Send + Sync>, bounces: u8) -> Vector {
+fn raytrace(ray: &Ray, bvh: Rc<dyn SceneElement>, bounces: u8) -> Vector {
 
     // Find the closest collision
     let collision = bvh.collide(ray);

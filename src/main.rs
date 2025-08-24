@@ -1,3 +1,4 @@
+use std::rc::Rc;
 use image::{RgbImage};
 mod config;
 use config::*;
@@ -18,19 +19,19 @@ fn main() {
     let camera = Camera::new();
     let mut image = RgbImage::new(WIDTH, HEIGHT);
 
-    let mut elements: Vec<Box<dyn SceneElement + Send + Sync>> = Vec::new();
+    let mut elements: Vec<Rc<dyn SceneElement>> = Vec::new();
 
-    elements.push(Box::new(Sphere::new(
+    elements.push(Rc::new(Sphere::new(
         Vector::new(60., 60., 0.), 40.,
-        Box::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 3.)))
+        Rc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 3.)))
     ));
 
     for i in 0..3 {
         for j in 0..3 {
             let radius = random::<f64>();
-            elements.push(Box::new(Sphere::new(
+            elements.push(Rc::new(Sphere::new(
                 Vector::new((i * 2 - 5 * 2) as f64, radius, (j * 2 - 5 * 2) as f64), radius,
-                Box::new(DiffuseMaterial::new(Vector::new(random::<f64>(), random::<f64>(), random::<f64>()), 0.)))
+                Rc::new(DiffuseMaterial::new(Vector::new(random::<f64>(), random::<f64>(), random::<f64>()), 0.)))
             ));
         }
     }
@@ -40,7 +41,7 @@ fn main() {
             utils::print_progress(x as f64 / WIDTH as f64);
     
             for y in 0.. HEIGHT {
-                let color = pixel_color(&camera, &bvh, x, y);
+                let color = pixel_color(&camera, bvh.clone(), x, y);
                 image.put_pixel(x, y, utils::to_rgb(&color));
             }
         }
