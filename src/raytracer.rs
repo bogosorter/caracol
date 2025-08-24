@@ -1,13 +1,14 @@
 use crate::geometry::ray::Ray;
+use crate::geometry::scene_element::SceneElement;
 use crate::geometry::vector::Vector;
 use crate::camera::Camera;
 use crate::config::*;
 
-pub fn pixel_color(camera: &Camera, x: u32, y: u32) -> Vector {
+pub fn pixel_color(camera: &Camera, bvh: &Box<dyn SceneElement + Send + Sync>, x: u32, y: u32) -> Vector {
     let mut result = Vector::ZERO;
 
     for _ in 0..ITERATIONS {
-        result += raytrace(&camera.ray(x, y), BOUNCES);
+        result += raytrace(&camera.ray(x, y), bvh, BOUNCES);
     }
 
     result /= ITERATIONS as f64;
@@ -15,13 +16,10 @@ pub fn pixel_color(camera: &Camera, x: u32, y: u32) -> Vector {
 }
 
 // Returns the color of the ray, using diffuse reflection
-fn raytrace(ray: &Ray, bounces: u8) -> Vector {
+fn raytrace(ray: &Ray, bvh: &Box<dyn SceneElement + Send + Sync>, bounces: u8) -> Vector {
 
     // Find the closest collision
-    let collision = ELEMENTS
-        .iter()
-        .filter_map(|obj| obj.collide(ray))
-        .min_by(|a, b| a.distance.total_cmp(&b.distance));
+    let collision = bvh.collide(ray);
 
     if collision.is_none() { return VOID }
     let info = collision.unwrap();
@@ -35,7 +33,7 @@ fn raytrace(ray: &Ray, bounces: u8) -> Vector {
 
     let emitted = info.material.emission();
     let reflected_ray = &info.material.reflect(&ray, &intersection, &info.normal);
-    let reflected = raytrace(reflected_ray, bounces - 1).hadamard(&info.material.albedo());
+    let reflected = raytrace(reflected_ray, bvh, bounces - 1).hadamard(&info.material.albedo());
 
     emitted + reflected
 }

@@ -1,3 +1,4 @@
+use crate::geometry::hitbox::HitBox;
 use crate::geometry::vector::Vector;
 use crate::geometry::material::Material;
 use crate::geometry::ray::Ray;
@@ -18,6 +19,7 @@ impl<'a> CollisionInfo<'a> {
     }
 }
 
-pub trait SceneElement {
+pub trait SceneElement: Send + Sync {
     fn collide(&self, ray: &Ray) -> Option<CollisionInfo>;
+    fn hitbox(&self) -> HitBox;
 }

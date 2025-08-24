@@ -97,7 +97,6 @@ impl Neg for Vector {
 
 impl Add<Vector> for Vector {
     type Output = Vector;
-
     fn add(self, other: Vector) -> Vector {
         Vector {
             x: self.x + other.x,

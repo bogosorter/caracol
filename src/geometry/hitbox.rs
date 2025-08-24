@@ -1,8 +1,10 @@
 use std::mem::swap;
+use std::ops::Add;
 use crate::geometry::vector::Vector;
 use crate::geometry::ray::Ray;
 use crate::config::EPSILON;
 
+#[derive(Clone, Copy)]
 pub struct HitBox {
     start: Vector,
     end: Vector
@@ -60,5 +62,15 @@ impl HitBox {
         }
     
         tmin <= tmax && tmax >= 0.0
+    }
+}
+
+impl Add<HitBox> for HitBox {
+    type Output = HitBox;
+    fn add(self, other: HitBox) -> HitBox {
+        HitBox::new(
+            Vector::new(self.start.x.min(other.start.x), self.start.y.min(other.start.y), self.start.z.min(other.start.z)),
+            Vector::new(self.end.x.max(other.end.x), self.end.y.max(other.end.y), self.end.z.max(other.end.z))
+        )
     }
 }

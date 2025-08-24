@@ -60,4 +60,8 @@ impl SceneElement for Sphere {
 
         Some(CollisionInfo::new(d, normal, &*self.material))
     }
+
+    fn hitbox(&self) -> HitBox {
+        self.hitbox
+    }
 }

@@ -22,25 +22,3 @@ pub const VOID: Vector = Vector::new(0.3, 0.3, 0.3);
 pub const ITERATIONS: u32 = 10;
 pub const BOUNCES: u8 = 5;
 pub const EPSILON: f64 = 1e-6;
-
-// Scene settings
-pub static ELEMENTS: Lazy<Vec<Box<dyn SceneElement + Send + Sync>>> = Lazy::new( || {
-    let mut result: Vec<Box<dyn SceneElement + Send + Sync>> = Vec::new();
-
-    for i in 0..10 {
-        for j in 0..10 {
-            let radius = random::<f64>();
-            result.push(Box::new(Sphere::new(
-                Vector::new((i * 2 - 5 * 2) as f64, radius, (j * 2 - 5 * 2) as f64), radius,
-                Box::new(DiffuseMaterial::new(Vector::new(random::<f64>(), random::<f64>(), random::<f64>()), 0.)))
-            ));
-        }
-    }
-
-    result.push(Box::new(Sphere::new(
-        Vector::new(60., 60., 0.), 40.,
-        Box::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 3.)))
-    ));
-
-    result
-});
