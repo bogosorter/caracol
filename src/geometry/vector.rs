@@ -72,6 +72,14 @@ impl Vector {
         Vector {x, y, z}
     }
 
+    pub const fn uniform(v: f64) -> Vector {
+        Vector {
+            x: v,
+            y: v,
+            z: v
+        }
+    }
+
     pub const ZERO: Vector = Vector { x: 0., y: 0., z: 0. };
 }
 

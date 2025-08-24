@@ -1,21 +1,29 @@
 use crate::geometry::vector::Vector;
 use crate::geometry::material::Material;
 use crate::geometry::ray::Ray;
+use crate::geometry::hitbox::HitBox;
 use crate::geometry::scene_element::{SceneElement, CollisionInfo};
 
 pub struct Sphere {
     pub center: Vector,
     pub radius: f64,
-    pub material: Box<dyn Material>
+    pub material: Box<dyn Material>,
+    hitbox: HitBox
 }
 
 impl Sphere {
     pub const fn new(center: Vector, radius: f64, material: Box<dyn Material>) -> Self {
-        Self { center, radius, material }
+        let hitbox = HitBox::new(
+            Vector::new(center.x - radius, center.y - radius, center.z - radius),
+            Vector::new(center.x + radius, center.y + radius, center.z + radius)
+        );
+        Self {center, radius, material, hitbox}
     }
 
     // Returns the intersection distance of a ray and a sphere, if any
     fn distance(&self, ray: &Ray) -> Option<f64> {
+        if !self.hitbox.intersects(ray) { return None }
+
         let oc = ray.origin - self.center;
         let a = ray.direction.dot(&ray.direction);
         let b = 2. * oc.dot(&ray.direction);
