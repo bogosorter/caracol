@@ -4,8 +4,8 @@ use std::collections::BinaryHeap;
 use ordered_float::OrderedFloat;
 use crate::geometry::ray::Ray;
 use crate::geometry::hitbox::HitBox;
-use crate::geometry::scene_element::{SceneElement, CollisionInfo};
 use crate::geometry::vector::Vector;
+use crate::scene::elements::{SceneElement, CollisionInfo};
 
 pub fn build_bvh(mut elements: Vec<Rc<dyn SceneElement>>) -> Rc<dyn SceneElement> {
     if elements.len() == 0 { return Rc::new(EmptyBVHNode::new()); }
@@ -62,7 +62,7 @@ pub fn build_bvh(mut elements: Vec<Rc<dyn SceneElement>>) -> Rc<dyn SceneElement
 struct BVHNode {
     left: Rc<dyn SceneElement>,
     right: Rc<dyn SceneElement>,
-    pub hitbox: HitBox
+    hitbox: HitBox
 }
 
 impl BVHNode {
@@ -89,22 +89,25 @@ impl SceneElement for BVHNode {
         Some(right)
     }
 
-    fn hitbox(&self) -> HitBox {
-        self.hitbox
+    fn hitbox(&self) -> &HitBox {
+        &self.hitbox
     }
 }
 
-struct EmptyBVHNode;
+struct EmptyBVHNode {
+    hitbox: HitBox
+}
 
 impl EmptyBVHNode {
     pub fn new() -> Self {
-        Self {}
+        let hitbox = HitBox::new(Vector::ZERO, Vector::ZERO);
+        Self {hitbox}
     }
 }
 
 impl SceneElement for EmptyBVHNode {
     fn collide(&self, _: &Ray) -> Option<CollisionInfo> { None }
-    fn hitbox(&self) -> HitBox {
-        HitBox::new(Vector::ZERO, Vector::ZERO)
+    fn hitbox(&self) -> &HitBox {
+        &self.hitbox
     }
 }

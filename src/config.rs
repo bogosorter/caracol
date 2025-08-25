@@ -1,9 +1,8 @@
 use rand::random;
 use std::rc::Rc;
 use crate::geometry::vector::Vector;
-use crate::geometry::sphere::Sphere;
-use crate::geometry::material::{DiffuseMaterial};
-use crate::geometry::scene_element::SceneElement;
+use crate::scene::materials::DiffuseMaterial;
+use crate::scene::elements::{SceneElement, Sphere};
 
 // Image settings
 pub const ASPECT_RATIO: f64 = 16./9.;

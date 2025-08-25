@@ -1,9 +1,30 @@
 use std::rc::Rc;
-use crate::geometry::vector::Vector;
-use crate::geometry::material::Material;
-use crate::geometry::ray::Ray;
 use crate::geometry::hitbox::HitBox;
-use crate::geometry::scene_element::{SceneElement, CollisionInfo};
+use crate::geometry::vector::Vector;
+use crate::geometry::ray::Ray;
+use crate::scene::materials::Material;
+
+pub trait SceneElement {
+    fn collide(&self, ray: &Ray) -> Option<CollisionInfo>;
+    fn hitbox(&self) -> &HitBox;
+}
+
+pub struct CollisionInfo {
+    pub distance: f64,
+    pub normal: Vector,
+    pub material: Rc<dyn Material>
+}
+
+impl CollisionInfo {
+    pub fn new(distance: f64, normal: Vector, material: Rc<dyn Material>) -> Self {
+        Self {
+            distance,
+            normal,
+            material
+        }
+    }
+}
+
 
 pub struct Sphere {
     pub center: Vector,
@@ -62,7 +83,7 @@ impl SceneElement for Sphere {
         Some(CollisionInfo::new(d, normal, self.material.clone()))
     }
 
-    fn hitbox(&self) -> HitBox {
-        self.hitbox
+    fn hitbox(&self) -> &HitBox {
+        &self.hitbox
     }
 }
