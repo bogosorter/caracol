@@ -18,6 +18,13 @@ impl HitBox {
         }
     }
 
+    pub const fn area(&self) -> f64 {
+        let width = self.end.x - self.start.x;
+        let height = self.end.y - self.start.y;
+        let depth = self.end.z - self.start.z;
+        width * height * depth
+    }
+
     pub fn intersects(&self, ray: &Ray) -> bool {
         let mut tmin = f64::NEG_INFINITY;
         let mut tmax = f64::INFINITY;
