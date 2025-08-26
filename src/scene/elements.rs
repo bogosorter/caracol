@@ -156,7 +156,7 @@ impl SceneElement for Triangle {
         let distance = self.plane.collide(ray)?;
         let point = ray.at(distance);
 
-        // Check if the point is inside the triagnle using barycentric coordinates
+        // Check if the point is inside the triangle using barycentric coordinates
 
         // First barycentric coordinate 
         let ah = point - self.a;
@@ -171,7 +171,12 @@ impl SceneElement for Triangle {
         let c = 1. - a - b;
         if c < 0. { return None }
 
-       Some(CollisionInfo::new(distance, self.normal, self.material.clone()))
+        // We consider the normal to always face the origin of the ray
+        if self.normal.dot(&ray.direction) >= 0. {
+            Some(CollisionInfo::new(distance, -self.normal, self.material.clone()))
+        } else {
+            Some(CollisionInfo::new(distance, self.normal, self.material.clone()))
+        }
     }
 
     fn hitbox(&self) -> &HitBox {
