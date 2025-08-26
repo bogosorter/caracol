@@ -48,6 +48,13 @@ impl Vector {
         }
     }
 
+    // Projects self onto the direction of other
+    pub fn project(&self, other: &Vector) -> Vector {
+        let normalized = other.normalize();
+        let magnitude = self.dot(&normalized);
+        magnitude * normalized
+    }
+
     pub const fn clamp(&self, min: f64, max: f64) -> Vector {
         Vector {
             x: self.x.clamp(min, max),

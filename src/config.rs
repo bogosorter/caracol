@@ -1,8 +1,8 @@
 use rand::random;
 use std::rc::Rc;
 use crate::geometry::vector::Vector;
-use crate::scene::materials::DiffuseMaterial;
-use crate::scene::elements::{SceneElement, Sphere};
+use crate::scene::materials::{DiffuseMaterial, ReflectiveMaterial};
+use crate::scene::elements::{SceneElement, Sphere, Triangle};
 
 // Image settings
 pub const ASPECT_RATIO: f64 = 16./9.;
@@ -44,6 +44,13 @@ pub fn create_scene() -> Vec<Rc<dyn SceneElement>> {
             ));
         }
     }
+
+    elements.push(Rc::new(Triangle::new(
+        Vector::new(-5., 5., 0.),
+        Vector::new(-5., -5., 5.),
+        Vector::new(5., -5., 0.),
+        Rc::new(ReflectiveMaterial::new(Vector::new(0.9, 0.9, 0.9), 0., 0.8))
+    )));
     
     elements
 }
