@@ -19,6 +19,10 @@ impl Vector {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
     }
 
+    pub fn magnitude_sqr(&self) -> f64 {
+        self.x * self.x + self.y * self.y + self.z * self.z
+    }
+
     pub fn normalize(&self) -> Vector {
         let m = self.magnitude();
         Vector {

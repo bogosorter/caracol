@@ -6,7 +6,7 @@ use crate::scene::materials::Material;
 use crate::config::*;
 
 pub trait SceneElement {
-    fn collide(&self, ray: &Ray) -> Option<CollisionInfo>;
+    fn collide(&self, ray: &Ray, max_distance: f64) -> Option<CollisionInfo>;
     fn hitbox(&self) -> &HitBox;
 }
 
@@ -35,7 +35,7 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub const fn new(center: Vector, radius: f64, material: Rc<dyn Material>) -> Self {
+    pub fn new(center: Vector, radius: f64, material: Rc<dyn Material>) -> Self {
         let hitbox = HitBox::new(
             Vector::new(center.x - radius, center.y - radius, center.z - radius),
             Vector::new(center.x + radius, center.y + radius, center.z + radius)
@@ -44,8 +44,8 @@ impl Sphere {
     }
 
     // Returns the intersection distance of a ray and a sphere, if any
-    fn distance(&self, ray: &Ray) -> Option<f64> {
-        if !self.hitbox.intersects(ray) { return None }
+    fn distance(&self, ray: &Ray, max_distance: f64) -> Option<f64> {
+        if !self.hitbox.intersects(ray, max_distance) { return None }
 
         let oc = ray.origin - self.center;
         let a = ray.direction.dot(&ray.direction);
@@ -72,8 +72,8 @@ impl Sphere {
 }
 
 impl SceneElement for Sphere {
-    fn collide(&self, ray: &Ray) -> Option<CollisionInfo> {
-        let d = self.distance(ray)?;
+    fn collide(&self, ray: &Ray, max_distance: f64) -> Option<CollisionInfo> {
+        let d = self.distance(ray, max_distance)?;
         let point = ray.at(d);
 
         // Normalizing a vector is expensive, since it requires calculating a
@@ -101,7 +101,7 @@ impl Plane {
         Self {point, normal}
     }
 
-    fn collide(&self, ray: &Ray) -> Option<f64> {
+    fn collide(&self, ray: &Ray, max_distance: f64) -> Option<f64> {
         let w = self.point - ray.origin;
         let a = w.dot(&self.normal);
         let b = ray.direction.dot(&self.normal);
@@ -110,7 +110,7 @@ impl Plane {
         if b.abs() < EPSILON { return None }
         
         let distance = a / b;
-        if distance < 0. { return None }
+        if distance < 0. || distance > max_distance { return None }
         Some(distance)
     }
 }
@@ -150,10 +150,10 @@ impl Triangle {
 }
 
 impl SceneElement for Triangle {
-    fn collide(&self, ray: &Ray) -> Option<CollisionInfo> {
-        if !self.hitbox.intersects(ray) { return None }
+    fn collide(&self, ray: &Ray, max_distance: f64) -> Option<CollisionInfo> {
+        if !self.hitbox.intersects(ray, max_distance) { return None }
 
-        let distance = self.plane.collide(ray)?;
+        let distance = self.plane.collide(ray, max_distance)?;
         let point = ray.at(distance);
 
         // Check if the point is inside the triangle using barycentric coordinates

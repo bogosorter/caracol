@@ -8,14 +8,16 @@ use crate::config::EPSILON;
 #[derive(Clone, Copy)]
 pub struct HitBox {
     start: Vector,
-    end: Vector
+    end: Vector,
+    center: Vector,
 }
 
 impl HitBox {
-    pub const fn new(start: Vector, end: Vector) -> Self {
+    pub fn new(start: Vector, end: Vector) -> Self {
         Self {
             start,
-            end
+            end,
+            center: (start + end) / 2.
         }
     }
 
@@ -57,9 +59,13 @@ impl HitBox {
         }
     }
 
-    pub fn intersects(&self, ray: &Ray) -> bool {
+    pub fn distance(&self, point: &Vector) -> f64 {
+        (point - self.center).magnitude_sqr()
+    }
+
+    pub fn intersects(&self, ray: &Ray, max_distance: f64) -> bool {
         let mut tmin = f64::NEG_INFINITY;
-        let mut tmax = f64::INFINITY;
+        let mut tmax = max_distance;
     
         // X slab
         if ray.direction.x.abs() < EPSILON {

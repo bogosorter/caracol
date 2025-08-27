@@ -68,20 +68,26 @@ impl BVHNode {
 }
 
 impl SceneElement for BVHNode {
-    fn collide(&self, ray: &Ray) -> Option<CollisionInfo> {
-        if !self.hitbox.intersects(ray) { return None }
+    fn collide(&self, ray: &Ray, max_distance: f64) -> Option<CollisionInfo> {
+        if !self.hitbox.intersects(ray, max_distance) { return None }
 
-        let l = self.left.collide(ray);
-        let r = self.right.collide(ray);
+        if self.left.hitbox().distance(&ray.origin) < self.right.hitbox().distance(&ray.origin) {
+            let l = self.left.collide(ray, max_distance);
+            if l.is_none() { return self.right.collide(ray, max_distance) }
+            let left = l.unwrap();
 
-        if l.is_none() { return r }
-        if r.is_none() { return l }
+            let r = self.right.collide(ray, left.distance);
+            if r.is_none() { return Some(left) }
+            r
+        } else {
+            let r = self.right.collide(ray, max_distance);
+            if r.is_none() { return self.left.collide(ray, max_distance) }
+            let right = r.unwrap();
 
-        let left = l.unwrap();
-        let right = r.unwrap();
-
-        if left.distance < right.distance { return Some(left) }
-        Some(right)
+            let l = self.left.collide(ray, right.distance);
+            if l.is_none() { return Some(right) }
+            l
+        }
     }
 
     fn hitbox(&self) -> &HitBox {
@@ -101,7 +107,7 @@ impl EmptyBVHNode {
 }
 
 impl SceneElement for EmptyBVHNode {
-    fn collide(&self, _: &Ray) -> Option<CollisionInfo> { None }
+    fn collide(&self, _: &Ray, _: f64) -> Option<CollisionInfo> { None }
     fn hitbox(&self) -> &HitBox {
         &self.hitbox
     }

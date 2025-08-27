@@ -35,7 +35,7 @@ impl Raytracer {
     fn raytrace(&self, ray: &Ray, bounces: u8) -> Vector {
     
         // Find the closest collision
-        let collision = self.bvh.collide(ray);
+        let collision = self.bvh.collide(ray, f64::INFINITY);
     
         if collision.is_none() { return VOID }
         let info = collision.unwrap();
