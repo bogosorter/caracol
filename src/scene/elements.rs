@@ -151,6 +151,8 @@ impl Triangle {
 
 impl SceneElement for Triangle {
     fn collide(&self, ray: &Ray, max_distance: f64) -> Option<CollisionInfo> {
+        // Reject rays that face the back of the triangle
+        if ray.direction.dot(&self.normal) >= 0. { return None }
         if !self.hitbox.intersects(ray, max_distance) { return None }
 
         let distance = self.plane.collide(ray, max_distance)?;
@@ -171,12 +173,7 @@ impl SceneElement for Triangle {
         let c = 1. - a - b;
         if c < 0. { return None }
 
-        // We consider the normal to always face the origin of the ray
-        if self.normal.dot(&ray.direction) >= 0. {
-            Some(CollisionInfo::new(distance, -self.normal, self.material.clone()))
-        } else {
-            Some(CollisionInfo::new(distance, self.normal, self.material.clone()))
-        }
+        Some(CollisionInfo::new(distance, self.normal, self.material.clone()))
     }
 
     fn hitbox(&self) -> &HitBox {

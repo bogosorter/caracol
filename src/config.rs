@@ -18,20 +18,20 @@ pub const DEFOCUS_ANGLE: f64 = 0.;
 pub const VOID: Vector = Vector::new(0., 0., 0.0);
 
 // Raytracing settings
-pub const ITERATIONS: u32 = 100;
+pub const ITERATIONS: u32 = 20;
 pub const BOUNCES: u8 = 4;
 pub const EPSILON: f64 = 1e-6;
 
 pub fn create_scene() -> Vec<Rc<dyn SceneElement>> {
     let mut elements = read_obj("src/assets/bunny.obj", Rc::new(ReflectiveMaterial::new(
-        Vector::new(1.0, 1.0, 0.8), 0., 0.8
+        Vector::new(1.0, 1.0, 0.6), 0., 0.8
     )));
 
     // Cornell box
     elements.push(Rc::new(Triangle::new(
         Vector::new(-3., 0., -3.),
-        Vector::new(-3., 6., -3.),
         Vector::new(3., 6., -3.),
+        Vector::new(-3., 6., -3.),
         Rc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 0.))
     )));
     elements.push(Rc::new(Triangle::new(
@@ -42,14 +42,14 @@ pub fn create_scene() -> Vec<Rc<dyn SceneElement>> {
     )));
     elements.push(Rc::new(Triangle::new(
         Vector::new(-3., 6., -3.),
-        Vector::new(-3., 6., 3.),
         Vector::new(3., 6., -3.),
+        Vector::new(-3., 6., 3.),
         Rc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 0.))
     )));
     elements.push(Rc::new(Triangle::new(
         Vector::new(3., 6., -3.),
-        Vector::new(-3., 6., 3.),
         Vector::new(3., 6., 3.),
+        Vector::new(-3., 6., 3.),
         Rc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 0.))
     )));
     elements.push(Rc::new(Triangle::new(
@@ -72,14 +72,14 @@ pub fn create_scene() -> Vec<Rc<dyn SceneElement>> {
     )));
     elements.push(Rc::new(Triangle::new(
         Vector::new(-3., 6., 3.),
-        Vector::new(-3., 0., -3.),
         Vector::new(-3., 0., 3.),
+        Vector::new(-3., 0., -3.),
         Rc::new(DiffuseMaterial::new(Vector::new(1., 0., 0.), 0.))
     )));
     elements.push(Rc::new(Triangle::new(
         Vector::new(3., 0., -3.),
-        Vector::new(3., 6., -3.),
         Vector::new(3., 6., 3.),
+        Vector::new(3., 6., -3.),
         Rc::new(DiffuseMaterial::new(Vector::new(0., 1., 0.), 0.))
     )));
     elements.push(Rc::new(Triangle::new(
@@ -87,20 +87,32 @@ pub fn create_scene() -> Vec<Rc<dyn SceneElement>> {
         Vector::new(3., 0., -3.),
         Vector::new(3., 0., 3.),
         Rc::new(DiffuseMaterial::new(Vector::new(0., 1., 0.), 0.))
+    )));
+    elements.push(Rc::new(Triangle::new(
+        Vector::new(-3., 0., 3.),
+        Vector::new(-3., 6., 3.),
+        Vector::new(3., 6., 3.),
+        Rc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 0.))
+    )));
+    elements.push(Rc::new(Triangle::new(
+        Vector::new(3., 6., 3.),
+        Vector::new(3., 0., 3.),
+        Vector::new(-3., 0., 3.),
+        Rc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 0.))
     )));
 
     // Top light
     elements.push(Rc::new(Triangle::new(
-        Vector::new(-2., 5.9, -2.),
-        Vector::new(-2., 5.9, 2.),
-        Vector::new(2., 5.9, -2.),
-        Rc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 3.))
+        Vector::new(-2., 5.99, -2.),
+        Vector::new(2., 5.99, -2.),
+        Vector::new(-2., 5.99, 2.),
+        Rc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 2.))
     )));
     elements.push(Rc::new(Triangle::new(
-        Vector::new(2., 5.9, -2.),
-        Vector::new(-2., 5.9, 2.),
-        Vector::new(2., 5.9, 2.),
-        Rc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 3.))
+        Vector::new(2., 5.99, -2.),
+        Vector::new(2., 5.99, 2.),
+        Vector::new(-2., 5.99, 2.),
+        Rc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 2.))
     )));
     
     elements
