@@ -2,6 +2,7 @@ use std::mem::swap;
 use std::cmp::Ordering;
 use crate::geometry::vector::Vector;
 use crate::geometry::ray::Ray;
+use crate::utils::utils::Axis;
 use crate::config::EPSILON;
 
 #[derive(Clone, Copy)]
@@ -34,18 +35,7 @@ impl HitBox {
         self.end.y = self.end.y.max(other.end.y);
         self.end.z = self.end.z.max(other.end.z);
     }
-
-    pub fn longest_axis(&self) -> Axis {
-        let xlen = self.end.x - self.start.x;
-        let ylen = self.end.y - self.start.y;
-        let zlen = self.end.z - self.start.z;
-        let mlen = xlen.max(ylen).max(zlen);
-
-        if mlen == xlen { Axis::X }
-        else if mlen == ylen { Axis::Y }
-        else { Axis::Z }
-    }
-
+    
     // Compares the center of two hitboxes along a given axis
     pub fn compare(&self, other: &HitBox, axis: Axis) -> Ordering {
         match axis {
@@ -112,10 +102,4 @@ impl HitBox {
     
         tmin <= tmax && tmax >= 0.0
     }
-}
-
-pub enum Axis {
-    X,
-    Y,
-    Z
 }

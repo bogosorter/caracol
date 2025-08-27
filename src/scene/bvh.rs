@@ -3,22 +3,53 @@ use crate::geometry::ray::Ray;
 use crate::geometry::hitbox::HitBox;
 use crate::geometry::vector::Vector;
 use crate::scene::elements::{SceneElement, CollisionInfo};
+use crate::utils::utils::Axis;
 
 pub fn build_bvh(mut elements: Vec<Rc<dyn SceneElement>>) -> Rc<dyn SceneElement> {
     if elements.len() == 0 { return Rc::new(EmptyBVHNode::new()); }
     if elements.len() == 1 { return elements.remove(0); }
 
     let n = elements.len();
+    let mut best_axis = Axis::X;
+    let mut best_index = 0;
+    let mut best_cost = f64::INFINITY;
 
-    let mut hitbox: HitBox = *elements[0].hitbox();
-    for i in 1..n {
-        hitbox.merge(elements[i].hitbox());
+    for axis in [Axis::X, Axis::Y, Axis::Z] {
+        let mut lareas = vec![0.; n - 1];
+        let mut rareas = vec![0.; n - 1];
+        elements.sort_by(|a, b| a.hitbox().compare(b.hitbox(), axis));
+
+        let mut lhitbox: HitBox = *elements[0].hitbox();
+        lareas[0] = lhitbox.area();
+        for i in 1..n - 1 {
+            lhitbox.merge(elements[i].hitbox());
+            lareas[i] = lhitbox.area();
+        }
+
+        let mut rhitbox: HitBox = *elements[n - 1].hitbox();
+        rareas[n - 2] = rhitbox.area();
+        for i in (0..n - 1).rev() {
+            rhitbox.merge(elements[i].hitbox());
+            rareas[i] = rhitbox.area();
+        }
+
+        for i in 0..n - 1 {
+            let cost = lareas[i] * (i + 1) as f64 + rareas[i] * (n - i - 1) as f64;
+            if cost < best_cost {
+                best_axis = axis;
+                best_index = i;
+                best_cost = cost;
+            }
+        }
+    }
+    
+    let mut hitbox = *elements[0].hitbox();
+    for element in &elements {
+        hitbox.merge(element.hitbox());
     }
 
-    elements.sort_by(|a, b| a.hitbox().compare(b.hitbox(), hitbox.longest_axis()));
-
-    let mid = n / 2;
-    let left = build_bvh(elements.drain(0..mid).collect());
+    elements.sort_by(|a, b| a.hitbox().compare(b.hitbox(), best_axis));
+    let left = build_bvh(elements.drain(0..=best_index).collect());
     let right = build_bvh(elements);
 
     Rc::new(BVHNode::new(left, right, hitbox))

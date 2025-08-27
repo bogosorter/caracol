@@ -10,3 +10,10 @@ pub fn print_progress(progress: f64) {
     print!("\r{percentage:.1}%");
     std::io::Write::flush(&mut std::io::stdout()).unwrap();
 }
+
+#[derive(Clone, Copy)]
+pub enum Axis {
+    X,
+    Y,
+    Z
+}
