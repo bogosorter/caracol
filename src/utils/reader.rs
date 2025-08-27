@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -6,11 +6,11 @@ use crate::geometry::vector::Vector;
 use crate::scene::materials::Material;
 use crate::scene::elements::{SceneElement, Triangle};
 
-pub fn read_obj(filename: &str, material: Rc<dyn Material>) -> Vec<Rc<dyn SceneElement>> {
+pub fn read_obj(filename: &str, material: Arc<dyn Material>) -> Vec<Arc<dyn SceneElement>> {
     let file = File::open(filename).expect("Couldn't open model file");
 
     let mut vertices: Vec<Vector> = Vec::new();
-    let mut triangles: Vec<Rc<dyn SceneElement>> = Vec::new();
+    let mut triangles: Vec<Arc<dyn SceneElement>> = Vec::new();
 
     for line in BufReader::new(file).lines() {
         let line = line.expect("Couldn't parse model file");
@@ -32,7 +32,7 @@ pub fn read_obj(filename: &str, material: Rc<dyn Material>) -> Vec<Rc<dyn SceneE
             }
 
             for i in 2..indexes.len() {
-                triangles.push(Rc::new(Triangle::new(
+                triangles.push(Arc::new(Triangle::new(
                     vertices[indexes[0]],
                     vertices[indexes[i - 1]],
                     vertices[indexes[i]],

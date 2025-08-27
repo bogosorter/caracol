@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::sync::Arc;
 use crate::geometry::ray::Ray;
 use crate::geometry::vector::Vector;
 use crate::scene::elements::SceneElement;
@@ -8,12 +8,12 @@ use crate::config::*;
 
 pub struct Raytracer {
     camera: Camera,
-    bvh: Rc<dyn SceneElement>
+    bvh: Arc<dyn SceneElement>
 
 }
 
 impl Raytracer {
-    pub fn new(scene: Vec<Rc<dyn SceneElement>>) -> Self {
+    pub fn new(scene: Vec<Arc<dyn SceneElement>>) -> Self {
         Self {
             camera: Camera::new(),
             bvh: build_bvh(scene)

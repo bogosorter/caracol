@@ -1,7 +1,7 @@
 use crate::geometry::vector::Vector;
 use crate::geometry::ray::Ray;
 
-pub trait Material {
+pub trait Material: Send + Sync {
     fn albedo(&self) -> Vector;
     fn emission(&self) -> Vector;
     fn reflect(&self, ray: &Ray, point: &Vector, normal: &Vector) -> Ray;

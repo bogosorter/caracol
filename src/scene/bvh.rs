@@ -1,12 +1,12 @@
-use std::rc::Rc;
+use std::sync::Arc;
 use crate::geometry::ray::Ray;
 use crate::geometry::hitbox::HitBox;
 use crate::geometry::vector::Vector;
 use crate::scene::elements::{SceneElement, CollisionInfo};
 use crate::utils::utils::Axis;
 
-pub fn build_bvh(mut elements: Vec<Rc<dyn SceneElement>>) -> Rc<dyn SceneElement> {
-    if elements.len() == 0 { return Rc::new(EmptyBVHNode::new()); }
+pub fn build_bvh(mut elements: Vec<Arc<dyn SceneElement>>) -> Arc<dyn SceneElement> {
+    if elements.len() == 0 { return Arc::new(EmptyBVHNode::new()); }
     if elements.len() == 1 { return elements.remove(0); }
 
     let n = elements.len();
@@ -52,17 +52,17 @@ pub fn build_bvh(mut elements: Vec<Rc<dyn SceneElement>>) -> Rc<dyn SceneElement
     let left = build_bvh(elements.drain(0..=best_index).collect());
     let right = build_bvh(elements);
 
-    Rc::new(BVHNode::new(left, right, hitbox))
+    Arc::new(BVHNode::new(left, right, hitbox))
 }
 
 struct BVHNode {
-    left: Rc<dyn SceneElement>,
-    right: Rc<dyn SceneElement>,
+    left: Arc<dyn SceneElement>,
+    right: Arc<dyn SceneElement>,
     hitbox: HitBox
 }
 
 impl BVHNode {
-    pub fn new(left: Rc<dyn SceneElement>, right: Rc<dyn SceneElement>, hitbox: HitBox) -> Self {
+    pub fn new(left: Arc<dyn SceneElement>, right: Arc<dyn SceneElement>, hitbox: HitBox) -> Self {
         Self {left, right, hitbox}
     }
 }

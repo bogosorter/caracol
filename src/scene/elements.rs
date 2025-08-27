@@ -1,11 +1,11 @@
-use std::rc::Rc;
+use std::sync::Arc;
 use crate::geometry::hitbox::HitBox;
 use crate::geometry::vector::Vector;
 use crate::geometry::ray::Ray;
 use crate::scene::materials::Material;
 use crate::config::*;
 
-pub trait SceneElement {
+pub trait SceneElement: Send + Sync {
     fn collide(&self, ray: &Ray, max_distance: f64) -> Option<CollisionInfo>;
     fn hitbox(&self) -> &HitBox;
 }
@@ -13,11 +13,11 @@ pub trait SceneElement {
 pub struct CollisionInfo {
     pub distance: f64,
     pub normal: Vector,
-    pub material: Rc<dyn Material>
+    pub material: Arc<dyn Material>
 }
 
 impl CollisionInfo {
-    pub fn new(distance: f64, normal: Vector, material: Rc<dyn Material>) -> Self {
+    pub fn new(distance: f64, normal: Vector, material: Arc<dyn Material>) -> Self {
         Self {
             distance,
             normal,
@@ -26,16 +26,15 @@ impl CollisionInfo {
     }
 }
 
-
 pub struct Sphere {
     center: Vector,
     radius: f64,
-    material: Rc<dyn Material>,
+    material: Arc<dyn Material>,
     hitbox: HitBox
 }
 
 impl Sphere {
-    pub fn new(center: Vector, radius: f64, material: Rc<dyn Material>) -> Self {
+    pub fn new(center: Vector, radius: f64, material: Arc<dyn Material>) -> Self {
         let hitbox = HitBox::new(
             Vector::new(center.x - radius, center.y - radius, center.z - radius),
             Vector::new(center.x + radius, center.y + radius, center.z + radius)
@@ -118,7 +117,7 @@ impl Plane {
 pub struct Triangle {
     a: Vector,
     b: Vector,
-    material: Rc<dyn Material>,
+    material: Arc<dyn Material>,
 
     normal: Vector,
     plane: Plane,
@@ -132,7 +131,7 @@ pub struct Triangle {
 }
 
 impl Triangle {
-    pub fn new(a: Vector, b: Vector, c: Vector, material: Rc<dyn Material>) -> Self {
+    pub fn new(a: Vector, b: Vector, c: Vector, material: Arc<dyn Material>) -> Self {
         let ac = c - a;
         let bc = c - b;
         let barycentric_a = ac - ac.project(&bc);
