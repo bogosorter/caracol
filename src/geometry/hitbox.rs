@@ -1,9 +1,10 @@
 use std::mem::swap;
-use std::ops::Add;
+use std::cmp::Ordering;
 use crate::geometry::vector::Vector;
 use crate::geometry::ray::Ray;
 use crate::config::EPSILON;
 
+#[derive(Clone, Copy)]
 pub struct HitBox {
     start: Vector,
     end: Vector
@@ -22,6 +23,48 @@ impl HitBox {
         let height = self.end.y - self.start.y;
         let depth = self.end.z - self.start.z;
         width * height * depth
+    }
+
+    pub fn merge(&mut self, other: &HitBox) {
+        self.start.x = self.start.x.min(other.start.x);
+        self.start.y = self.start.y.min(other.start.y);
+        self.start.z = self.start.z.min(other.start.z);
+
+        self.end.x = self.end.x.max(other.end.x);
+        self.end.y = self.end.y.max(other.end.y);
+        self.end.z = self.end.z.max(other.end.z);
+    }
+
+    pub fn longest_axis(&self) -> Axis {
+        let xlen = self.end.x - self.start.x;
+        let ylen = self.end.y - self.start.y;
+        let zlen = self.end.z - self.start.z;
+        let mlen = xlen.max(ylen).max(zlen);
+
+        if mlen == xlen { Axis::X }
+        else if mlen == ylen { Axis::Y }
+        else { Axis::Z }
+    }
+
+    // Compares the center of two hitboxes along a given axis
+    pub fn compare(&self, other: &HitBox, axis: Axis) -> Ordering {
+        match axis {
+            Axis::X => {
+                let scenter = self.start.x + self.end.x;
+                let ocenter = other.start.x + other.end.x;
+                scenter.partial_cmp(&ocenter).unwrap()
+            },
+            Axis::Y => {
+                let scenter = self.start.y + self.end.y;
+                let ocenter = other.start.y + other.end.y;
+                scenter.partial_cmp(&ocenter).unwrap()
+            },
+            Axis::Z => {
+                let scenter = self.start.z + self.end.z;
+                let ocenter = other.start.z + other.end.z;
+                scenter.partial_cmp(&ocenter).unwrap()
+            }
+        }
     }
 
     pub fn intersects(&self, ray: &Ray) -> bool {
@@ -71,12 +114,8 @@ impl HitBox {
     }
 }
 
-impl Add<&HitBox> for &HitBox {
-    type Output = HitBox;
-    fn add(self, other: &HitBox) -> HitBox {
-        HitBox::new(
-            Vector::new(self.start.x.min(other.start.x), self.start.y.min(other.start.y), self.start.z.min(other.start.z)),
-            Vector::new(self.end.x.max(other.end.x), self.end.y.max(other.end.y), self.end.z.max(other.end.z))
-        )
-    }
+pub enum Axis {
+    X,
+    Y,
+    Z
 }
