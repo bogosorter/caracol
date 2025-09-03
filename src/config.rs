@@ -124,13 +124,13 @@ pub fn create_scene() -> Vec<Arc<dyn SceneElement>> {
         Vector::new(-2., 5.99, -2.),
         Vector::new(2., 5.99, -2.),
         Vector::new(-2., 5.99, 2.),
-        Arc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 2.))
+        Arc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 3.))
     )));
     elements.push(Arc::new(Triangle::new(
         Vector::new(2., 5.99, -2.),
         Vector::new(2., 5.99, 2.),
         Vector::new(-2., 5.99, 2.),
-        Arc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 2.))
+        Arc::new(DiffuseMaterial::new(Vector::new(1., 1., 1.), 3.))
     )));
     
     elements
