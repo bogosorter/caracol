@@ -1,17 +1,18 @@
 use image::{RgbImage, Rgb};
 use rayon::prelude::*;
 use std::sync::atomic::{AtomicUsize, Ordering};
-use bogotracer::renderer::raytracer::Raytracer;
-use bogotracer::utils::utils::{self, to_rgb};
-use bogotracer::config::*;
+use caracol::renderer::raytracer::Raytracer;
+use caracol::utils::utils::{self, to_rgb};
+use caracol::config::*;
 
 fn main() {
     let raytracer = Raytracer::new(create_scene());
     
-    // Render the image in parallel
     let progress = AtomicUsize::new(0);
+    utils::print_progress(0.);
+    
+    // Render the image in parallel
     let pixels: Vec<(u32, u32, Rgb<u8>)> = (0..WIDTH).into_par_iter().flat_map(|x| -> Vec<(u32, u32, Rgb<u8>)> {
-        
         let result = (0..HEIGHT).map(|y| {
             let color = raytracer.pixel_color(x, y);
             (x, y, to_rgb(&color))
@@ -26,6 +27,7 @@ fn main() {
     utils::print_progress(1.);
     println!("");
     
+    // Save the image as a .png file
     let mut image = RgbImage::new(WIDTH, HEIGHT);
     for (x, y, color) in pixels {
         image.put_pixel(x, y, color);

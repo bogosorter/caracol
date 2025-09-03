@@ -100,17 +100,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6099cdc01846bc367c4e7dd630dc5966dccf36b652fae7a74e17b640411a91b2"
 
 [[package]]
-name = "bogotracer"
-version = "0.1.0"
-dependencies = [
- "image",
- "once_cell",
- "ordered-float",
- "rand 0.9.2",
- "rayon",
-]
-
-[[package]]
 name = "built"
 version = "0.7.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -133,6 +122,17 @@ name = "byteorder-lite"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8f1fe948ff07f4bd06c30984e69f5b4899c516a3ef74f34df92a2df2ab535495"
+
+[[package]]
+name = "caracol"
+version = "0.1.0"
+dependencies = [
+ "image",
+ "once_cell",
+ "ordered-float",
+ "rand 0.9.2",
+ "rayon",
+]
 
 [[package]]
 name = "cc"
