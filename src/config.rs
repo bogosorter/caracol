@@ -18,7 +18,7 @@ pub const DEFOCUS_ANGLE: f64 = 0.02;
 pub const VOID: Vector = Vector::new(0., 0., 0.0);
 
 // Raytracing settings
-pub const ITERATIONS: u32 = 200;
+pub const RAYS_PER_PIXEL: u32 = 200;
 pub const BOUNCES: u8 = 4;
 pub const EPSILON: f64 = 1e-6;
 

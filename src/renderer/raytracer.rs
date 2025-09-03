@@ -23,11 +23,11 @@ impl Raytracer {
     pub fn pixel_color(&self, x: u32, y: u32) -> Vector {
         let mut result = Vector::ZERO;
     
-        for _ in 0..ITERATIONS {
+        for _ in 0..RAYS_PER_PIXEL {
             result += self.raytrace(&self.camera.ray(x, y), BOUNCES);
         }
     
-        result /= ITERATIONS as f64;
+        result /= RAYS_PER_PIXEL as f64;
         result.clamp(0., 1.)
     }
     
