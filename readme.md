@@ -1,6 +1,6 @@
 # Caracol
 
-![](images/snail.png)
+![](./images/snail.png)
 
 _Caracol_ is my very own slow raytracer. It was inspired by Sebastian Lague's [video](https://www.youtube.com/watch?v=Qz0KTGYJtUk) and written in Rust. Some of my other sources include the famous [Raytracing in One Weekend series](https://raytracing.github.io/), [How to build a BVH](https://jacco.ompf2.com/2022/04/13/how-to-build-a-bvh-part-1-basics/), a myriad of YouTube videos on geometry, and many ChatGPT prompts.
 
@@ -21,7 +21,9 @@ To change the scene or its settings, modify `src/config.rs`. _Caracol_ has some 
 
 Here's the [famous](https://engineering.stanford.edu/news/tale-ubiquitous-stanford-bunny) Stanford Bunny in a Cornell Box. This image (a 512x512 image with 2000 rays per pixel) takes about six minutes to render in my computer. The Bunny has 69451 triangles.
 
-<img src="./images/bunny.png" alt="" style="display: block; margin: auto;">
+<p align="center">
+  <img src="./images/bunny.png" alt="" style="display: block; margin: auto;">
+</p>
 
 ## Acknowledgments
 
